@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 >OPENROC
 >Routeur d'Objets Connectés
 
-    @TODO :
-            - Ordenacement du lancement (Serveur Web, Websocket Server [REDIS[SERIAL]])**
-            - OpenTSDB/HBASE distant pour stockage/analyse**
-            - OpenTSDB Visualisatuer**
     
   *NODE-HTTP*
   port : 4000
@@ -23,10 +18,4 @@
    https://github.com/grafana/grafana
    
    *REDIS*
-  
-  
-  https://github.com/openenergymonitor/emonTH/tree/master/emonTH_DHT22_DS18B20
-            
-=======
-# OPENROC_CONTROLLER
->>>>>>> 2427f03e7b927d8a020a1bb57ecf672d52d9dea4
+ 
