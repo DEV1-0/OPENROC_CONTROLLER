@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 >OPENROC
 >Routeur d'Objets Connectés
 
@@ -26,3 +27,6 @@
   
   https://github.com/openenergymonitor/emonTH/tree/master/emonTH_DHT22_DS18B20
             
+=======
+# OPENROC_CONTROLLER
+>>>>>>> 2427f03e7b927d8a020a1bb57ecf672d52d9dea4
