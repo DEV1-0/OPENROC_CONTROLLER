@@ -1,0 +1,36 @@
+{
+  "ENV": {
+    "mode": "TEST"
+  },
+  "WWW": {
+    "port": "4000",
+    "host": "0.0.0.0"
+  },
+  "LOGS": {
+    "path": "/../../conf/log4js.json",
+    "reload": "300",
+    "level": "DEBUG"
+  },
+  "REDIS": {
+    "port": "6379",
+    "host": "127.0.0.1",
+    "options": {
+      "server": {
+        "poolSize": 5
+      }
+    }
+  },
+  "OPENTSDB": {
+    "port": "4242",
+    "host": "quickstart.cloudera"
+  },
+  "SERIAL": {
+    "port": "/dev/ttyACM0",
+    "speed": 115200,
+    "dataBits": 8,
+    "parity": "none",
+    "stopBits": 1,
+    "flowControl": false,
+    "newline": "\n"
+  }
+}

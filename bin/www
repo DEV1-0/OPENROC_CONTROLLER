@@ -1,0 +1,1162 @@
+#!/usr/bin/env node
+/*******************************************************************************
+ * PROJET : OpenROC
+ * @author 2015-2016 Eric Papet <e.papet@dev1-0.com.com>
+ * @see The GNU Public License (GPL)
+ * Description : Main application
+ *******************************************************************************
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *******************************************************************************/
+//
+//Limit les écouteurs
+//process.setMaxListeners(0);
+//
+var util = require('util');
+// debug log
+var debug = require('debug')('OpenRoc');
+// Date manipulation
+var moment = require('moment');
+moment.locale('fr');
+
+//
+require('../openroc/modules/openroc_globals');
+
+//log4js-node
+//var log4js = require('log4js');
+//log4js.configure('./../conf/log4js.json');
+// var logger = log4js.getLogger('openroc_core');
+
+const dbAddress = '127.0.0.1';
+const dbPort = 27017;
+const dbName = 'MySensorsDb';
+
+const fwSketches = [];
+const fwDefaultType = 0xFFFF; // index of hex file from array above (0xFFFF
+
+const FIRMWARE_BLOCK_SIZE = 16;
+const BROADCAST_ADDRESS = 255;
+const NODE_SENSOR_ID = 255;
+
+const C_PRESENTATION = 0;
+const C_SET = 1;
+const C_REQ = 2;
+const C_INTERNAL = 3;
+const C_STREAM = 4;
+
+const V_TEMP = 0;
+const V_HUM = 1;
+const V_LIGHT = 2;
+const V_DIMMER = 3;
+const V_PRESSURE = 4;
+const V_FORECAST = 5;
+const V_RAIN = 6;
+const V_RAINRATE = 7;
+const V_WIND = 8;
+const V_GUST = 9;
+const V_DIRECTION = 10;
+const V_UV = 11;
+const V_WEIGHT = 12;
+const V_DISTANCE = 13;
+const V_IMPEDANCE = 14;
+const V_ARMED = 15;
+const V_TRIPPED = 16;
+const V_WATT = 17;
+const V_KWH = 18;
+const V_SCENE_ON = 19;
+const V_SCENE_OFF = 20;
+const V_HEATER = 21;
+const V_HEATER_SW = 22;
+const V_LIGHT_LEVEL = 23;
+const V_VAR1 = 24;
+const V_VAR2 = 25;
+const V_VAR3 = 26;
+const V_VAR4 = 27;
+const V_VAR5 = 28;
+const V_UP = 29;
+const V_DOWN = 30;
+const V_STOP = 31;
+const V_IR_SEND = 32;
+const V_IR_RECEIVE = 33;
+const V_FLOW = 34;
+const V_VOLUME = 35;
+const V_LOCK_STATUS = 36;
+
+const I_BATTERY_LEVEL = 0;
+const I_TIME = 1;
+const I_VERSION = 2;
+const I_ID_REQUEST = 3;
+const I_ID_RESPONSE = 4;
+const I_INCLUSION_MODE = 5;
+const I_CONFIG = 6;
+const I_PING = 7;
+const I_PING_ACK = 8;
+const I_LOG_MESSAGE = 9;
+const I_CHILDREN = 10;
+const I_SKETCH_NAME = 11;
+const I_SKETCH_VERSION = 12;
+const I_REBOOT = 13;
+const I_GATEWAY_READY = 14;
+
+const S_DOOR = 0;
+const S_MOTION = 1;
+const S_SMOKE = 2;
+const S_LIGHT = 3;
+const S_DIMMER = 4;
+const S_COVER = 5;
+const S_TEMP = 6;
+const S_HUM = 7;
+const S_BARO = 8;
+const S_WIND = 9;
+const S_RAIN = 10;
+const S_UV = 11;
+const S_WEIGHT = 12;
+const S_POWER = 13;
+const S_HEATER = 14;
+const S_DISTANCE = 15;
+const S_LIGHT_LEVEL = 16;
+const S_ARDUINO_NODE = 17;
+const S_ARDUINO_REPEATER_NODE = 18;
+const S_LOCK = 19;
+const S_IR = 20;
+const S_WATER = 21;
+const S_AIR_QUALITY = 22;
+
+const ST_FIRMWARE_CONFIG_REQUEST = 0;
+const ST_FIRMWARE_CONFIG_RESPONSE = 1;
+const ST_FIRMWARE_REQUEST = 2;
+const ST_FIRMWARE_RESPONSE = 3;
+const ST_SOUND = 4;
+const ST_IMAGE = 5;
+
+const P_STRING = 0;
+const P_BYTE = 1;
+const P_INT16 = 2;
+const P_UINT16 = 3;
+const P_LONG32 = 4;
+const P_ULONG32 = 5;
+const P_CUSTOM = 6;
+
+
+//TABLE D'ETAT DES REPONSES SUR LES PINGS
+PING_NODE_STATE = [];
+function register_ping(node) {
+    PING_NODE_STATE[node.node_id] = moment().format('X');
+    debug("register ping for node %s", node.node_id);
+}
+function update_ping() {
+    var now = moment().format('X');
+    PING_NODE_STATE.forEach(function (state) {
+        debug(" update ping value %s", state);
+
+    });
+}
+function send_ping() {
+    GLOBAL.NODES.forEach(function (node) {
+        if (node.node_id != 0) {
+            //var td = encode();
+            sendMessage(node.node_id, 255, C_REQ, 1, V_VAR2, 'ping');
+            debug("send ping to node %s", node.node_id);
+            register_ping(node);
+        }
+    });
+}
+function req_sensor_model() {
+    GLOBAL.NODES.forEach(function (node) {
+        if (node.node_id != 0 && node.sensors.length > 0) {
+            //var td = encode();
+            node.sensors.forEach(function (_s) {
+                if (_s.model == null) {
+                    //_s.sensor_id
+                    sendMessage(node.node_id, _s.sensor_id, C_REQ, 0, V_VAR1, 'model');
+                    debug("send req model to node %d sensor %d", node.node_id, _s.sensor_id);
+                }
+
+            });
+        }
+    });
+}
+
+Sensors
+//
+//tableux des Nodes
+GLOBAL.NODES = [];
+//-- Create or retrieve Node by node_id
+function registerNode(node_id) {
+    if (GLOBAL.NODES[node_id] != undefined) {
+        // GLOBAL.NODES[node_id].status=true;
+        return GLOBAL.NODES[node_id];
+    }
+    if (node_id >= 255)
+        return null;
+    //
+    GLOBAL.NODES[node_id] = {
+        "node_id": node_id, // 0 = GateWay
+        "presentation": null,
+        "type": null, //0 = Gateway ; 1 = Sensor Node ; 2 = Repeater Node
+        "status": true,
+        "version": null,
+        "sketch_version": null,
+        "battery_level": null,
+        "sensors": [],
+        "last_update": moment().format('X')
+    }
+    return GLOBAL.NODES[node_id];
+}
+//
+function getNextNodeId(cb) {
+    var new_id;
+    var nodesId = [];
+    GLOBAL.NODES.forEach(function (node) {
+        nodesId.push(node.node_id);
+    });
+    //
+    if (nodesId.length > 0) {
+        nodesId.sort();
+        new_id = nodesId[nodesId.length - 1] + 1;
+        debug(" getNextNodeId last id is : %d", new_id);
+
+    }
+    //
+    if (new_id != undefined && new_id < 254)
+        cb(new_id);
+    else
+        cb(null);
+}
+//-- Save in Redis and update GUI
+function updateNode(node) {
+    //debug("upadateNode :%s",util.inspect(node));
+    saveNode(node);
+    sio.sockets.emit('update_node', node);
+}
+//- create or retrieve sensor by node_id and sensor_id
+function registerSensor(node_id, sensor_id) {
+    var _node = null;
+    var _sensor = null;
+    if (GLOBAL.NODES[node_id] != undefined && GLOBAL.NODES[node_id].sensors[sensor_id] != undefined && sensor_id != 255) {
+        _node = GLOBAL.NODES[node_id];
+        // _node.sensor[sensor_id].status=true;
+    } else {
+
+        if (GLOBAL.NODES[node_id].sensors[sensor_id] == undefined) {
+            _node = GLOBAL.NODES[node_id];
+            _node.sensors[sensor_id] = {
+                "node_id": node_id,
+                "sensor_id": sensor_id,
+                "presentation": null,
+                "localisation": null,
+                "type": null,
+                "value": null,
+                "model": null,
+                "last_update": moment().format('X')
+            }
+        }
+    }
+    //debug("addSensor :%s",util.inspect(GLOBAL.NODES[node_id]))
+    return GLOBAL.NODES[node_id].sensors[sensor_id];
+}
+// Save and update WEB GUI
+function updateSensor(sensor) {
+    //debug(" updateSensor :%s",util.inspect(sensor)) ;
+    saveNode(GLOBAL.NODES[sensor.node_id]);
+    sio.sockets.emit('update_sensor', sensor);
+}
+
+function initAllSensors(mode) {
+    // on affiche tous les nodes
+    GLOBAL.NODES.forEach(function (node) {
+        if (mode != undefined) {
+            if (node.node_id == '0' && mode == true)
+                node.status = mode;
+            else
+                node.status = !mode;
+            if (mode == false)
+                node.status = mode;
+        }
+        node.last_update = moment().format('X');
+        GLOBAL.NODES[node.node_id] = node;
+        //debug("initAllSensors %s",u;til.inspect(GLOBAL.NODES[node.node_id]));
+        updateNode(node)
+        // saveNode(GLOBAL.NODES[node.node_id]);
+        //sio.sockets.emit('update_node', GLOBAL.NODES[node.node_id]);
+    });
+}
+// Initialyse le modele de données
+function init_modele_nodes(cb) {
+    if (redis_status) {
+        redis_client.select(1);
+        redis_client.keys('*', function (err, result) {
+            //var key;
+            // debug("init_modele_nodes key %s",util.inspect(result));
+            result.forEach(function (id) {
+                    debug(" id %s", id);
+                    redis_client.get(id, function (err, node) {
+                        if (err) {
+                            //TODO gestion des erreurs
+                            debug("init_modele_nodes ERROR %s", util.inspect(err));
+                            cb(err, null);
+                        } else {
+                            try {
+                                GLOBAL.NODES[id] = JSON.parse(node);
+                            } catch (err) {
+                                cb(err, null);
+                            }
+                            // debug("init_modele_nodes key %s node %s",id,util.inspect(GLOBAL.NODES[id]));
+                        }
+                    });
+                }
+            );
+            cb(null, true);
+        });
+    } else { //Mode restrient GLOBAL.NODES[];
+        GLOBAL.NODES = [];
+        cb(null, false);
+    }
+
+
+}
+
+
+//-------------------------------//
+//-           REDIS              -
+//-------------------------------//
+//Redis : https://github.com/luin/ioredis/blob/master/README.md
+var redis_client = null;
+var Redis = require('ioredis');
+const redisHost = '127.0.0.1';
+const redisPort = 6379;
+var redis_status = true;
+// function
+function connectRedis(cb) {
+    var bascule = false;
+    //var json;
+    var _client;
+    redis_client = new Redis({
+        port: redisPort,          // Redis port
+        host: redisHost,   // Redis host
+        family: 4
+    });
+
+    //
+    modelServices.redis.host = redisHost;
+    modelServices.redis.port = redisPort;
+    //
+    // json = {"type": "G", "model": "REDIS", "host": redisHost, "port": redisPort};
+    //
+    redis_client.monitor(function (err, monitor) {
+        if (err)
+            debug(" redis monitor error :" + util.inspect(er));
+        else
+            monitor.on('monitor', function (time, args) {
+                //debug(" Redis Monitor Time :" + time + " Value :" + util.inspect(args));
+            });
+    });
+
+    redis_client.on('connect', function (err) {
+        //
+        modelServices.redis.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+        if (err) {
+            if (redis_status) {
+                debug(" Connection to redis failed : " + util.instect(err));
+            }
+            redis_status = false;
+            //json["error"] = util.inspect(err);
+            modelServices.redis["error"] = util.inspect(err);
+        } else {
+            debug(" Redis is connected host :" + redisHost + " port :" + redisPort);
+            redis_status = true;
+        }
+        //
+        init_modele_nodes(function (err, mode) {
+            if (err) {// mode restrient, on découvre les nodes et leurs sensors
+                debug("start init_modele_nodes error %s", util.inspect(err));
+            } else {
+                if (mode) {
+                    debug("Initialisation du model des Nodes mode REDIS");
+                } else {
+                    debug("Initialisation du model des Nodes mode DECOUVERTES");
+                }
+            }
+        });
+        //json["status"] = redis_status;
+        modelServices.redis.status = redis_status;
+        sio.emit("redis_connected", modelServices.redis);
+        //sendToRedis(json, 3000);
+    });
+    //
+    redis_client.on('close', function () {
+
+        if (redis_status) {
+            debug(" Redis is disconnected ..");
+            //
+            redis_status = false;
+            //
+            //
+            init_modele_nodes(function (err, mode) {
+                if (err) {// mode restrient, on découvre les nodes et leurs sensors
+                    debug("start init_modele_nodes error %s", util.inspect(err));
+                } else {
+                    if (mode) {
+                        debug("Initialisation du model des Nodes mode REDIS");
+                    } else {
+                        debug("Initialisation du model des Nodes mode DECOUVERTES");
+                    }
+                }
+            });
+            //
+            modelServices.redis.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+            modelServices.redis.status = redis_status;
+            // json["status"] = redis_status;
+            //
+            sio.emit("redis_connected", modelServices.redis);
+        }
+
+
+        //connectRedis();
+    });
+    //
+    cb();
+//
+}
+// Node DB
+function sendToRedis(json, timestamp, ttl) {
+    // Build KEY
+    var key;
+    if (json.type != undefined && json.type != null)
+        key = json.type + "-";
+    else
+        key = "F-";
+    if (json.node_id != undefined && json.node_id != null)
+        key += json.node_id + "-";
+    if (json.model != undefined && json.model != null)
+        key += json.model + "-";
+    key += timestamp;
+    //if (json.timestamp != undefined && json.timestamp != null)
+    //   key += json.timestamp;
+    // else
+    //   key += Date.now();
+
+
+    redis_client.set(key, JSON.stringify(json), function (err) {
+        if (err)
+            debug(" redis_client send error :" + util.inspect(err) + " key :" + key + " value :" + value);
+        else {
+            //sendToHbase();
+        }
+    });
+    redis_client.expire(key, ttl, function (err) {
+        if (err)
+            debug(" redis_client ttl error :" + util.inspect(err) + " key :" + key + " value :" + value);
+    });
+}
+function toRedis(db, key, data, ttl, cb) {
+    redis_client.select(db);
+    redis_client.set(key, data, function (err) {
+        if (err) {
+            debug(" redis_client send error :" + util.inspect(err) + " key :" + key + " value :" + value);
+            cb(err);
+        }
+    });
+    redis_client.expire(key, ttl, function (err) {
+        if (err) {
+            debug(" redis_client ttl error :" + util.inspect(err) + " key :" + key);
+            cb(err);
+        }
+    });
+};
+function saveNode(node) {
+    //var node = registerNode(node_id);
+    if (node != undefined && node != null && node.node_id < 255) {
+        toRedis(1, node.node_id, JSON.stringify(node), 100000, function (err) {
+            if (err) {
+                debug("Write Redis Error %s", util.inspect(err));
+            }
+        });
+    }
+
+}
+function saveMetric(sensor) {
+    //var node = registerNode(node_id);
+    debug("saveMetric:", util.inspect(sensor));
+    if (sensor != undefined && sensor.type != undefined && sensor.value != null) {
+        var key = moment().format('X') + "-" + sensor.node_id + "-" + sensor.sensor_id + "-" + sensor.type.metric;
+        toRedis(2, key, JSON.stringify(sensor), 100000, function (err) {
+            if (err) {
+                debug("Write Redis Error %s", util.inspect(err));
+            }
+        });
+        // send to TSDB
+        var model = '' + sensor.model;// cast en string
+        //debug(" model %s",model);
+        var tags = {'node_id': sensor.node_id, 'sensor_id': sensor.sensor_id, 'model': model.replace(/ /g, '_')};
+        pushToOpenTSDB(sensor.type.metric, sensor.value, sensor.last_update, tags, function (err) {
+            if (err)
+                debug(" saveMetric Error %s", err.error);
+        })
+    }
+
+}
+function saveMetricBattery(current_node) {
+    var tags = {'node_id': current_node.node_id, 'model': 'BATTRY'};
+    pushToOpenTSDB('battry', current_node.battery_level, current_node.last_update, tags, function (err) {
+        if (err)
+            debug(" saveMetricBaterry Error %s", err.error);
+    })
+}
+function getMetric(date, metric, node_id, se, sensor_id, callback) {
+    redis_client.select(2);//metric db
+    //var key = date+'-'+
+    redis_client.get('foo', function (err, result) {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(result);
+        }
+    });
+
+}
+
+//-------------------------------//
+//-    OpenTSDB-HBASE             -
+//-------------------------------//
+const tsdbPort = 4242;
+const tsdbHost = "quickstart.cloudera";
+var tsdb_status = false;
+var Node2OpenTSDB = require('../openroc/OpenTsDB/node2opentsdb');
+//var Node2OpenTSDB = require('../openroc/OpenTsDB/node2opentsdb');
+var client_writer_opentsdb = null;
+// functions
+function initPushOpenTSDB() {
+    client_writer_opentsdb = new Node2OpenTSDB({
+        host: tsdbHost,
+        port: tsdbPort
+    });
+    modelServices.tsdb.host = tsdbHost;
+    modelServices.tsdb.port = tsdbPort;
+    modelServices.tsdb.status = tsdb_status;
+    modelServices.tsdb.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+}
+//
+function pushToOpenTSDB(metric, value, timestamp, tag_array, cb) {
+    //
+    var dps = [];
+    var dp = {"metric": metric, "timestamp": timestamp, "value": String(value), "tags": tag_array};
+    // remplace ' ' par '_'
+
+    debug(" OpenTSDB Data Point :%s", JSON.stringify(dp));
+    //
+    dps.push(dp);
+    //This function stores data points in opentsdb
+    client_writer_opentsdb.store(dps, function (res, err) {
+        if (err != null) {
+            debug(" pushToOpenTSDB push ERROR : %s Error message :%s", JSON.stringify(dp), err);
+            //var json = {
+            //    "type": "G",
+            //    "port": client_writer_opentsdb.port,
+            //    "host": client_writer_opentsdb.host,
+            //    "status": 1,
+            //    "err": err
+            //};
+            //Horodatage des messages pour Redis_key et tags TSDB
+            // json["timestamp"] = Date.now();
+            // sio.emit("opentsdb_connected", json);
+            //debug(json);
+            //
+            // json = {
+            //     timestamp: Date.now(),
+            //     type: 'E',
+            //     node_id: 255,
+            //     metric: "openTSB_send",
+            //     value: false,
+            //     request: JSON.stringify(dp)
+            // };
+            if (tsdb_status) {
+                tsdb_status = false;
+                modelServices.tsdb.status = tsdb_status;
+                modelServices.tsdb.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+                modelServices.tsdb.error = err.errno;
+                sio.emit("opentsdb_connected", modelServices.tsdb);
+            }
+            //sendToRedis(json, 600);
+            cb({'error': err.errno});
+        } else {
+            if (!tsdb_status) {
+                tsdb_status = true;
+                modelServices.tsdb.status = tsdb_status;
+                modelServices.tsdb.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+                modelServices.tsdb.error = null;
+                sio.emit("opentsdb_connected", modelServices.tsdb);
+            }
+            debug(" pushToOpenTSDB Ok http status : %s", res);
+            cb();
+        }
+        //sio.emit("opentsdb_connected",modelServices.tsdb);
+    });
+
+}
+//
+
+//-------------------------------//
+//- Serial Connection with Node GW -
+//-------------------------------//
+var GwSerialPort = '/dev/ttyACM1';
+const SerialBaud = 115200;
+const SerialNewLineOpenRoc = '\r\n';
+const SerialNewLineMySensor = '\n';
+var serial = require('serialport');
+var SerialPort = serial.SerialPort;
+var serial_status = true;
+// functions
+function connectSerialGw(GwSerialPort, SerialBaud, SerialNewLine, parser) {
+    var parser = parser;
+    var now = moment();
+    //
+    //
+    try {
+        serialPort = new SerialPort(GwSerialPort, {
+            baudRate: SerialBaud,
+            dataBits: 8,
+            parity: 'none',
+            stopBits: 1,
+            parser: serial.parsers.readline(SerialNewLine),
+            flowControl: false
+        });
+
+    } catch (err) {
+        console.error(" GW Serial Error :%s", util.inspect(err));
+        if (modeleServices.serial.serial_satus != false) {
+            serial_satus = false;
+            modeleServices.serial.serial_satus = false;
+            modeleServices.serial.timestamp = now.format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+            sio.sockets.emit('serial_connected', modelServices.serial);
+            //
+            initAllSensors(false);
+            //
+            connectSerialGwTimeOut();
+        }
+    }
+
+    //
+    serialPort.on("open", function () {
+        debug("Serial is Connected at port :" + GwSerialPort + " with speed :" + SerialBaud);
+        serial_status = true;
+        modelServices.serial.status = serial_status;
+        modelServices.serial.timestamp = now.format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+        modelServices.serial.port = GwSerialPort;
+        // modelServices.serial.error = null;
+        // TODO save serial status in redis
+        sio.sockets.emit('serial_connected', modelServices.serial);
+        //sendToRedis(json, 3000);
+        // on affiche tous les nodes
+        initAllSensors(true);
+
+    });
+    // data est un document JSON
+    serialPort.on('data', function (data) {
+        debug("Incomming Serial GW data %s", data);
+        parser(data);
+    });
+    //
+    serialPort.on('close', function () {
+        if (serial_status) {
+            debug('Serial  is disconnected [evt :close]');
+            now = moment();
+            serial_satus = false;
+            modelServices.serial.status = serial_status;
+            modelServices.serial.timestamp = now.format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+            //
+            sio.sockets.emit('serial_connected', modelServices.serial);
+            //sendToRedis(json, 3000);
+            initAllSensors(false);
+        }
+
+        //var json = {
+        //    "type": "G",
+        //    "port": GwSerialPort,
+        //    "baud": SerialBaud,
+        //    "status": 0,
+        //    "timestamp": now.format('dddd Do MMMM YYYY, hh:mm:ss:SSS')
+        //};
+
+
+        connectSerialGwTimeOut();
+        //debug('CONNECTED TO SERIAL OpenRoc GW');
+    });
+    //
+    serialPort.on('error', function (err) {
+        if (serial_status) {
+            debug(" Error event Serial try to connect at port :" + GwSerialPort + " with speed :" + SerialBaud + " error : " + util.inspect(err));
+            //debug("Serial connection Error", util.inspect(err));
+            //
+            now = moment();
+            //var json = {
+            //    "type": "G",
+            //    "port": GwSerialPort,
+            //    "baud": SerialBaud,
+            //    "status": 0,
+            //    "timestamp": now.format('dddd Do MMMM YYYY, hh:mm:ss:SSS')
+            //};
+            serial_status = false;
+            modelServices.serial.status = serial_status;
+            modelServices.serial.timestamp = now.format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+            //json["error"] = util.inspect(err);
+            modelServices.serial.port = util.inspect(err);
+            //json["timestamp"] = Date.now();
+            sio.sockets.emit('serial_connected', modelServices.serial);
+            //sendToRedis(json, 3000);
+
+            //bascule = !bascule;
+            //
+            initAllSensors(false);
+            // serial_status = false;
+        }
+
+        connectSerialGwTimeOut();
+    });
+};
+// check for connection errors or drops and reconnect
+function connectSerialGwTimeOut() {
+
+    setTimeout(function () {
+        // if (cptSerialConnection == 0)
+        // debug('RECONNECTING TO SERIAL OpenRoc GW');
+        //bascule = !bascule;
+        connectSerialGw(GwSerialPort, SerialBaud, SerialNewLineMySensor, parserMySensor);
+
+        //debug('CONNECTED TO SERIAL OpenRoc GW');
+        //cpt++;
+    }, 2000);
+};
+//  OLD parser for Teensy
+function parser(incoming_data) {
+    var data = incoming_data;
+    var json = null;
+    var now = null;
+
+    if (data.length < 3) {
+        debug(" Invalide incomming data :" + data);
+        return;
+    }
+    //
+    try {
+        // Transform to JSON Object
+        json = JSON.parse(data);
+        if (json.type != undefined)
+        // Add Timestamp
+            moment.locale('fr');
+        // timestamp=moment('X');
+        now = moment();
+        json.timestamp = now.format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+    } catch (err) {
+        console.error(json);
+        return;
+        // json = JSON.parse('{ "type":"F"}');
+    }
+    //debug(data.toString('ascii'));
+    debug(json);
+    /**
+     * SITCH MESSAGE TYPE
+     */
+    switch (json.type) {
+        // sensor temperature and humidity Dallas DTH 21 or 22
+        case 'S':
+            parserModel(tab_model, json);
+            // sio.sockets.emit('sensor_temp_hum', json);
+            // sendToRedis(json, now.format('X'), 3000);
+            // pushToOpenTSDB("temperature", json.t, now.format('X'), {'node_id': json.node_id, 'model': json.model});
+            //pushToOpenTSDB("humidity", json.h, now.format('X'), {'node_id': json.node_id, 'model': json.model});
+            //pushToOpenTSDB("temperature-r", json.r, now.format('X'), {'node_id': json.node_id,'model': json.model});
+            break;
+        // case 'T':// sensor temperature DS18B20 étanche
+        // parserModel(tab_model, json);
+        // sio.sockets.emit('sensor_temp', json);
+        //sendToRedis(json, now.format('X'), 3000);
+        // pushToOpenTSDB("temperature", json.t, now.format('X'), {'node_id': json.node_id, 'model': json.model});
+        // break;
+        case 'L':// List of  Nodes
+            sio.sockets.emit('gw_list', json);
+            break;
+        case 'I': // add new node
+            sio.sockets.emit('node_add', json);
+            sendToRedis(json, 3000);
+            break;
+        case 'P':// Gw pull available node, one per second
+            sio.sockets.emit('ping', json);
+            sendToRedis(json, 30);
+            break;
+        case 'M':// Mode test, it's a node who send ping to GW (with frequenzy ping/seconde)
+            //console.log(" Case Monitoring M ..");
+            sio.sockets.emit('test_node', json);
+            sendToRedis(json, 480);
+            //console.log(" Case Monitoring M ..");
+            break;
+        case 'K':// Estimat Kbps and GW Master counters messages
+            sio.sockets.emit('kbps', json);
+            break;
+    }
+}
+//New Parser For MySensors
+function parserMySensor(data) {
+    var json;
+    var datas;
+    var sender;
+    var sensor;
+    var command;
+    var ack;
+    var type;
+    var payload;
+    //
+    var current_node = null;
+    var current_sensor = null;
+    //
+    debug("<- incomming message %s", util.inspect(data));
+    if ((data != null) && (data != "")) {
+        if (data.charAt(0) == '{') {// message provenant de Nodes OpenRoc Teensy [Protocole Synchrone, type: JSON]
+            json = JSON.parse(data);//TODO try catch
+            sender = json.node_id;
+            sensor = json.sensor_id;
+            command = json.type;
+            ack = 0;
+            type = json.type_value;
+            payload = json.value;
+        } else {// Messages provenant de Node MySensors.org Arduino [Protocole Asynchrone, type: String Message ]
+            //debug('<- ' + data);
+            // decoding message
+            datas = data.toString().split(";");//TODO try catch
+            sender = +datas[0];
+            sensor = +datas[1];
+            command = +datas[2];
+            ack = +datas[3];
+            type = +datas[4];
+            var rawpayload = "";
+            if (datas[5]) {
+                rawpayload = datas[5].trim();
+            }
+            //var payload;
+            // firmeware update
+            if (command == C_STREAM) {
+                payload = [];
+                for (var i = 0; i < rawpayload.length; i += 2)
+                    payload.push(parseInt(rawpayload.substring(i, i + 2), 16));
+            } else {
+                payload = rawpayload;
+            }
+            //
+        }
+
+        current_node = registerNode(sender);
+        //current_sensor = registerSensor[sender,sensor];
+        // decision on appropriate response
+        switch (command) {
+            //
+            case C_PRESENTATION:
+                if (sensor == NODE_SENSOR_ID) {// Presention du Node
+                    //saveProtocol(sender, payload, db);
+                    debug("<- [C_PESENTATION:Node <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", sender, sensor, command, type, payload, ack);
+                    current_node.version = payload;
+                    updateNode(current_node);
+                } else {// presenation d'un sensor
+                    debug("<- [C_PESENTATION:Sensor <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", sender, sensor, command, type, payload, ack);
+                    current_sensor = registerSensor(sender, sensor);
+                    current_sensor.presentation = GLOBAL.PRESENTATION[type];
+                    current_sensor.model = payload;
+                    updateSensor(current_sensor);
+                }
+
+                //saveSensor(sender, sensor, type, db);
+                break;
+            case C_SET:
+                debug("<- %s [C_SET <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                //Monitoring Node
+                if (current_node.status != true) {
+                    current_node.status = true;
+                    updateNode(current_node);
+                }
+
+                // Si ce n'est pas une donnée sensors mais la réponse à V_VAR1...5 TODO inplémenter une table d'états sur les ack
+                // current_sensor = registerSensor(sender, sensor);
+                if (sensor != 255) {
+                    current_sensor = registerSensor(sender, sensor);
+                    current_sensor.last_update = moment().format('X');
+                    if (type != V_VAR1) { // Metric
+                        current_sensor.type = GLOBAL.METRIC[type];
+                        current_sensor.value = payload;
+                        saveMetric(current_sensor);
+                    } else {
+                        current_sensor.model = payload;
+                    }
+                    updateSensor(current_sensor);
+                    //saveMetric(current_sensor);
+                }
+
+                // saveValue(sender, sensor, type, payload, db);
+                break;
+            case C_REQ:
+                debug("<- %s [C_REQ <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                break;
+            case C_INTERNAL:
+
+                switch (type) {
+                    case I_BATTERY_LEVEL:
+                        debug("<- %s [C_INTERNAL:: I_BATTERY_LEVEL <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        if (current_node.status != true) {
+                            current_node.status = true;
+                        }
+                        current_node.battery_level = payload;
+                        current_node.last_update = moment().format('X');
+                        updateNode(current_node);
+                        saveMetricBattery(current_node);
+                        // Presentation
+                        if (current_node.presentation == null || current_node.version == null) {//request node and sensors presenation
+                            sendMessage(current_node.node_id, 255, C_REQ, 0, V_VAR1, '');
+                        }
+
+                        // Si ce n'est pas une donnée sensors mais la réponse à un ACK message TODO inplémenter une table d'états sur les ack
+                        //current_sensor = registerSensor(sender, sensor);
+                        // saveBatteryLevel(sender, payload, db);
+                        break;
+                    case I_TIME:
+                        debug("<- %s [C_INTERNAL:: I_TIME <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        sendTime(sender, sensor);
+                        break;
+                    case I_VERSION:
+                        debug("<- %s [C_INTERNAL:: I_VERSION <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        // current_node = registerNode(sender);
+                        current_node.version = payload;
+                        updateNode(current_node);
+                        break;
+                    case I_ID_REQUEST:
+                        debug("<- %s [C_INTERNAL:: I_ID_REQUEST <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        getNextNodeId(function (next) {
+                            if (next != null) {
+                                debug("next  next id %d", next);
+                                sendMessage(255, 255, C_INTERNAL, 1, I_ID_RESPONSE, next);
+                            }
+                            else
+                                debug("error send next id ");
+                        });
+                        //sendNextAvailableSensorId(db, gw);
+                        break;
+                    case I_ID_RESPONSE:
+                        debug("<- %s [C_INTERNAL:: I_ID_RESPONSE <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        break;
+                    case I_INCLUSION_MODE:
+                        debug("<- %s [C_INTERNAL:: I_INCLUSION_MODE <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        break;
+                    case I_CONFIG: // system metric true= Celsus, false = Faranrhiet
+                        debug("<- %s [C_INTERNAL:: I_CONFIG <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        sendMessage(sender, sensor, C_INTERNAL, '0', I_CONFIG, 'M');
+                        debug("-> %s [C_INTERNAL:: I_CONFIG -> sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        break;
+                    case I_PING:
+                        debug("<- %s [C_INTERNAL:: I_PING <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        break;
+                    case I_PING_ACK:
+                        debug("<- %s [C_INTERNAL:: I_PING_ACK <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+
+                        break;
+                    case I_LOG_MESSAGE:
+                        debug("<- %s [C_INTERNAL:: I_LOG_MESSAGE <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+
+                        break;
+                    case I_CHILDREN:
+                        debug("<- %s [C_INTERNAL:: I_CHILDREN <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+
+                        break;
+                    case I_SKETCH_NAME:
+                        debug("<- %s [C_INTERNAL:: I_SKETCH_NAME <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        // current_node = registerNode[sender];
+                        current_node.presentation = payload;
+                        updateNode(current_node);
+                        // saveSketchName(sender, payload, db);
+                        break;
+                    case I_SKETCH_VERSION:
+                        debug("<- %s [C_INTERNAL:: I_SKETCH_VERSION <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        //  current_node = registerNode[sender];
+                        current_node.sketch_version = payload;
+                        updateNode(current_node);
+                        // saveSketchVersion(sender, payload, db);
+                        break;
+                    case I_REBOOT:
+                        debug("<- %s [C_INTERNAL:: I_REBOOT <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        break;
+                    case I_GATEWAY_READY :
+                        // create GW
+                        debug("<- %s [C_INTERNAL:: I_GATEWAY_READY  <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", data, sender, sensor, command, type, payload, ack);
+                        // current_node = registerNode(sender);
+                        current_node.presentation = "OpenRoc " + payload + " Gateway";
+                        // request version to Gateway
+                        if (current_node.version == null) // demande de version à la GateWay
+                            sendMessage('0', '0', C_INTERNAL, '0', I_VERSION, '');
+
+                        //sendMessage('0','0',C_INTERNAL,'0','20' ,'INIT');
+                        //TODO boucle d'initialisation envoie 1 à 254 messages de type C_INTERNAL V_ARG1 Broadcast les sensors répondent avec leurs présenations
+                        break;
+                }
+                break;
+            case C_STREAM:
+                switch (type) {
+                    case ST_FIRMWARE_CONFIG_REQUEST:
+                        var fwtype = pullWord(payload, 0);
+                        var fwversion = pullWord(payload, 2);
+                        // sendFirmwareConfigResponse(sender, fwtype, fwversion, db, gw);
+                        break;
+                    case ST_FIRMWARE_CONFIG_RESPONSE:
+                        break;
+                    case ST_FIRMWARE_REQUEST:
+                        var fwtype = pullWord(payload, 0);
+                        var fwversion = pullWord(payload, 2);
+                        var fwblock = pullWord(payload, 4);
+                        //sendFirmwareResponse(sender, fwtype, fwversion, fwblock, db, gw);
+                        break;
+                    case ST_FIRMWARE_RESPONSE:
+                        break;
+                    case ST_SOUND:
+                        break;
+                    case ST_IMAGE:
+                        break;
+                }
+                break;
+        }
+        // checkRebootRequest(sender, db, gw);
+    }
+}
+//Send time to node
+function sendTime(destination, sensor) {
+    var payload = moment().format('X') / 1000;
+    //var payload = new Date().getTime()/1000;
+    var command = C_INTERNAL;
+    var acknowledge = 0; // no ack
+    var type = I_TIME;
+    var td = encode(destination, sensor, command, acknowledge, type, payload);
+    debug('C_INTERNAL::I_TIME-> ' + td.toString());
+    //gw.write(td);
+    serialPort.write(td);
+}
+// send message to node
+function sendMessage(destination, sensor, command, ack, type, value) {
+    var req = encode(destination, sensor, command, ack, type, value);// Request presentation to node
+    try {
+        if (serial_status) {
+            serialPort.write(req);
+            debug("-> [send message] %s ", req);
+        } else {
+            debug("-> [send message error serial disconected] %s ", req);
+        }
+    } catch (err) {
+        debug("-> %s [send message error :%s]", req, util.inspect(err));
+    }
+}
+// encode message after seb
+function encode(destination, sensor, command, acknowledge, type, payload) {
+    var msg = destination.toString(10) + ";" + sensor.toString(10) + ";" + command.toString(10) + ";" + acknowledge.toString(10) + ";" + type.toString(10) + ";";
+    if (command == 4) {
+        for (var i = 0; i < payload.length; i++) {
+            if (payload[i] < 16)
+                msg += "0";
+            msg += payload[i].toString(16);
+        }
+    } else {
+        msg += payload;
+    }
+    msg += '\n';
+    return msg.toString();
+}
+
+
+//--------------------------------//
+// HTTP && Wsocket
+//-------------------------------//
+var app = require('../app');//app.js
+app.set('port', process.env.PORT || 4000);
+app.set('host', process.env.HOST || "localhost");
+// Start HTTP SERVER
+function startHttpServer(cb) {
+    var httpd = app.listen(app.get('port'), app.get('host'), function (server) {
+        //server.timeout(18000);// Timeout socket http
+        debug('OPENROC server listening on %s:%s ', httpd.address().address, httpd.address().port);
+        modelServices.http.host = httpd.address().address;
+        modelServices.http.port = httpd.address().port;
+        modelServices.http.status = true;
+        modelServices.http.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+    });
+    //httpd.timeout(18000);// Timeout socket http
+    cb(httpd);
+}
+// Start Web Socket server //
+function startWebsocketServer(httpd, cb) {
+    //
+    sio.listen(httpd, {log: false});
+    debug("WebSocket Started");
+    sio.sockets.on('connection', function (socket) {
+        debug("Websocket Page Connected add" + socket);
+        // service
+        update_services();
+        // gw
+        initAllSensors();
+    });
+    cb();
+}
+
+//-------------------------------//
+// Model Service
+//-------------------------------//
+var modelServices = {
+    "http": {"port": '', "host": '', "status": '', "timestamp": ''},
+    "redis": {"host": '', "port": '', "status": '', "timestamp": ''},
+    "serial": {"port": GwSerialPort, "baud": SerialBaud, "status": 1, "timestamp": ''},
+    "tsdb": {"port": tsdbPort.port, "host": tsdbHost.host, "status": 1, "timestamp": ''}
+};
+function update_services() {
+    sio.sockets.emit("init_services", modelServices);
+};
+
+
+//---------------------------//
+// Main Application
+//---------------------------//
+startHttpServer(function (server) {
+    //
+
+    connectRedis(function () {
+
+        //initialidation du tableau des nodes et des sensors
+
+        //Lancement du sous automate websocket
+        startWebsocketServer(server, function () {
+        });
+        //lancement du sous automate Serial
+        connectSerialGw(GwSerialPort, SerialBaud, SerialNewLineMySensor, parserMySensor);
+        //
+        initPushOpenTSDB();
+        // Websocket Add Timestamp
+        sio.sockets.emit("init_services", modelServices);
+        //
+        setInterval(function () {
+            //pour les sensors
+            //req_sensor_model();
+        }, 30000);
+        // WebSocket Broadcast Date
+        setInterval(function () {
+            sio.sockets.emit("update_time", moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS'));
+        }, 1000);
+
+    });
+
+});
+
+// End
+
+
+
