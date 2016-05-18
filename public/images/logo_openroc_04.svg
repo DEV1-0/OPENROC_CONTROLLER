@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="297mm"
+   height="210mm"
+   id="svg3998"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="logo_openroc_04.svg">
+  <defs
+     id="defs4000" />
+  <sodipodi:namedview
+     inkscape:document-units="mm"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="494.60661"
+     inkscape:cy="392.13228"
+     inkscape:current-layer="layer1"
+     id="namedview4002"
+     showgrid="false"
+     inkscape:window-width="598"
+     inkscape:window-height="404"
+     inkscape:window-x="1163"
+     inkscape:window-y="1133"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata4004">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       transform="matrix(0.99999999,-1.3567645e-4,1.3567645e-4,0.99999999,0,0)"
+       sodipodi:linespacing="125%"
+       id="text3000-7-0-8-9"
+       y="132.68777"
+       x="244.46609"
+       style="font-size:111.38621521px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Penultimate;-inkscape-font-specification:Penultimate"
+         y="132.68777"
+         x="244.46609"
+         id="tspan3002-6-2-6-8"
+         sodipodi:role="line">Open-R.O.C</tspan></text>
+    <text
+       transform="matrix(0.99995963,-0.00898512,0.00898512,0.99995963,0,0)"
+       sodipodi:linespacing="125%"
+       id="text3000-7-8-8-1-9"
+       y="683.79272"
+       x="190.31358"
+       style="font-size:54.17069244px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Penultimate;-inkscape-font-specification:Penultimate"
+         y="683.79272"
+         x="190.31358"
+         id="tspan3002-6-6-4-3-2"
+         sodipodi:role="line">Routeur d'Objets Connectés</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path2999-0-0-0-1"
+       d="M 857.57877,198.94867 C 817.70695,129.58543 630.97717,162.05068 440.38626,271.60692 249.79535,381.16307 127.62063,526.26356 167.49192,595.62673 207.36374,664.98981 394.15433,632.29892 584.74523,522.74276 775.33614,413.18653 897.45006,268.31179 857.57877,198.94867 z m -35.77221,21.32516 C 857.7559,282.81431 748.61182,412.9194 577.99223,510.99548 407.37319,609.07144 239.87287,637.98819 203.92298,575.4477 167.97311,512.90705 277.17854,382.57633 447.79811,284.50037 618.41716,186.42434 785.85667,157.73323 821.80656,220.27383 z"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path2999-3-3-0-3-2"
+       d="m 169.13536,196.48711 c -39.51966,69.56421 83.24518,213.96238 274.38865,322.55173 191.14348,108.58941 378.1789,140.19 417.69802,70.62701 C 900.7422,520.10036 777.75212,375.76434 586.60863,267.17487 395.46516,158.58551 208.65553,126.92285 169.13536,196.48711 z m 36.53312,19.99434 c 35.63209,-62.72191 203.13347,-34.73555 374.24691,62.47491 171.11399,97.21043 281.0597,226.84262 245.42709,289.56459 -35.63209,62.7218 -203.35874,34.79762 -374.47271,-62.41284 C 279.75632,408.89748 170.03586,279.20325 205.66848,216.48145 z"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(5.2873015,-0.06951525,0.06951525,5.2873015,-1721.8216,-1517.0715)"
+       d="m 367.59353,382.28302 a 9.1201696,9.1201696 0 1 1 -18.24034,0 9.1201696,9.1201696 0 1 1 18.24034,0 z"
+       sodipodi:ry="9.1201696"
+       sodipodi:rx="9.1201696"
+       sodipodi:cy="382.28302"
+       sodipodi:cx="358.47336"
+       id="path3790-7-0-5-6"
+       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path3792-9-6-2-6"
+       d="m 202.87072,445.05004 -0.24851,8.63184 c -20.11358,-2.02701 -29.92766,12.83498 -30.93075,31.21739 l -9.22026,0.8202 c 1.54508,-20.89834 10.35924,-40.28717 40.39847,-40.66943 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1.46240568;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(5.2873015,-0.06951525,0.06951525,5.2873015,-1106.6855,-1525.467)"
+       d="m 367.59353,382.28302 a 9.1201696,9.1201696 0 1 1 -18.24034,0 9.1201696,9.1201696 0 1 1 18.24034,0 z"
+       sodipodi:ry="9.1201696"
+       sodipodi:rx="9.1201696"
+       sodipodi:cy="382.28302"
+       sodipodi:cx="358.47336"
+       id="path3790-6-8-1-4-8"
+       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path3792-8-1-8-8-8"
+       d="m 817.49173,435.3615 -0.23266,8.19131 c -19.08668,-1.92293 -28.40054,12.17999 -29.35181,29.62445 l -8.74965,0.77815 c 1.46576,-19.8319 9.83046,-38.23123 38.33677,-38.59391 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1.38777637;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(8.726696,0.0087294,0.2321298,8.2650578,-2701.2651,-2769.8836)"
+       d="m 367.59353,382.28302 a 9.1201696,9.1201696 0 1 1 -18.24034,0 9.1201696,9.1201696 0 1 1 18.24034,0 z"
+       sodipodi:ry="9.1201696"
+       sodipodi:rx="9.1201696"
+       sodipodi:cy="382.28302"
+       sodipodi:cx="358.47336"
+       id="path3790-7-0-5-6-5"
+       style="fill:#8a0000;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cccccc"
+       inkscape:connector-curvature="0"
+       id="path3792-9-6-2-6-0"
+       d="m 514.40854,332.37151 -0.30671,13.11877 c -31.32044,-3.26122 -46.45823,19.23659 -47.85103,47.17024 l -14.34146,1.16241 c 2.2124,-31.7531 15.75329,-61.14494 62.4992,-61.45116 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.24923897;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-opacity:0.92803033999999995;stroke:#000000;stroke-width:0.93000001000000021;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 499.90661,531.16567 C 425.92298,494.38573 356.16272,448.23916 305.31614,402.44362 l -8.83708,-7.95921 8.21378,-7.38328 c 51.6674,-46.4433 122.29821,-93.25974 195.95778,-129.88731 l 18.744,-9.32054 12.756,6.3315 c 50.6925,25.16147 107.15659,60.11437 150.25599,93.01279 21.2566,16.22548 55.07184,44.79594 54.6645,46.18597 -0.68855,2.34965 -38.77058,34.86884 -58.6645,50.09508 -42.89561,32.83107 -98.09469,67.36251 -146,91.33468 l -12.5,6.25509 -20,-9.94272 z m 40,-69.82879 c 20.36516,-6.37037 35.8713,-19.05621 44.44296,-36.35954 5.56015,-11.22408 7.38937,-20.35005 6.73788,-33.61514 -0.85106,-17.32846 -6.98117,-31.76503 -18.91373,-44.5423 -16.54808,-17.71952 -39.13705,-26.65574 -63.55507,-25.14244 -16.74991,1.03806 -30.5318,6.1992 -42.58661,15.94811 -11.23583,9.08659 -18.55456,19.69444 -23.27611,33.73663 -2.90456,8.63835 -2.64507,31.0962 0.46795,40.5 7.00047,21.14694 25.22226,39.62121 46.77009,47.41812 11.83201,4.28133 16.94287,5.04434 30.91264,4.615 8.72112,-0.26802 13.91268,-0.96709 19,-2.55844 l 0,0 z"
+       id="path3105"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#d4aa00;fill-opacity:0.92803033999999995;stroke:#000000;stroke-width:0.93000001000000021;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 504.52739,462.29846 c -28.33294,-5.04066 -54.06314,-27.50615 -60.77145,-53.06061 -2.60809,-9.93517 -2.30838,-30.44557 0.56806,-38.87565 8.28117,-24.26991 29.34384,-41.89638 55.51813,-46.46079 14.78745,-2.57872 27.77138,-1.41969 41.80603,3.73187 19.28749,7.07967 37.2936,24.61854 44.24192,43.09389 4.82271,12.82342 5.59815,30.18808 1.90869,42.74222 -6.53374,22.23239 -26.68431,41.29779 -49.95239,47.2623 -7.54405,1.93383 -26.29872,2.81574 -33.31899,1.56677 l 0,0 z m -36.88933,-69.27651 c 0.40586,-0.63786 0.74482,-2.66979 0.75324,-4.5154 0.024,-5.25118 2.89123,-15.09388 6.22455,-21.36755 6.8403,-12.87418 18.47663,-19.91211 33.04076,-19.98385 l 7.75,-0.0382 0.009,-3.12739 c 0.005,-1.72006 0.28996,-5.46875 0.63373,-8.33041 l 0.62503,-5.20304 -7.38373,0.53444 c -9.65317,0.69871 -20.90719,3.46181 -28.38373,6.96883 -7.21305,3.38342 -16.80782,12.60224 -21.24066,20.40838 -3.89687,6.8623 -7.79682,20.16847 -8.75869,29.88361 l -0.73159,7.3892 8.36223,-0.72945 c 4.59923,-0.4012 8.6943,-1.25133 9.10016,-1.8892 z"
+       id="path3109"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/epa/Documents/DEVIS/AQUINETIC/ROUTEUR_MESSAGE/logo_openroc_05.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

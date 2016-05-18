@@ -1,0 +1,21 @@
+{
+  "appenders": [
+    {
+      "type": "console"
+    },
+    {
+      "type": "file",
+      "filename": "logs/openroc_core.log",
+      "category": "openroc_core",
+      "maxLogSize": 524288,
+      "backups": 3
+    },
+    {
+      "type": "file",
+      "filename": "logs/openroc_error.log",
+      "category": "openroc_error",
+      "maxLogSize": 524288,
+      "backups": 3
+    }
+  ]
+}

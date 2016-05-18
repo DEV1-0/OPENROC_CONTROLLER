@@ -1,0 +1,284 @@
+{
+  "0": {
+    "metric": "temperature",
+    "unite": "°C",
+    "max": 30,
+    "min": 12
+  },
+  "1": {
+    "metric": "humidity",
+    "unite": "%",
+    "max": 90,
+    "min": 30
+  },
+  "2": {
+    "metric": "binary",
+    "unite": "on/off",
+    "max": "on",
+    "min": "off"
+  },
+  "3": {
+    "metric": "variateur",
+    "unite": "%",
+    "max": 100,
+    "min": 0
+  },
+  "4": {
+    "metric": "pression",
+    "unite": "Kp",
+    "max": 100,
+    "min": 0
+  },
+  "5": {
+    "metric": "pression",
+    "unite": "stable/sunny/cloudy/unstable",
+    "max": "stable",
+    "min": "unstable"
+  },
+  "6": {
+    "metric": "précipitation",
+    "unite": "mm",
+    "max": "",
+    "min": ""
+  },
+  "7": {
+    "metric": "taux de précipitation",
+    "unite": "mm3",
+    "max": "",
+    "min": ""
+  },
+  "8": {
+    "metric": "vitesse du vent",
+    "unite": "m/s",
+    "max": "",
+    "min": ""
+  },
+  "9": {
+    "metric": "rafale",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "10": {
+    "metric": "direction du vent",
+    "unite": "N/O/E/S",
+    "max": "",
+    "min": ""
+  },
+  "11": {
+    "metric": "luminosité",
+    "unite": "lux",
+    "max": "",
+    "min": ""
+  },
+  "12": {
+    "metric": "poid",
+    "unite": "Kg",
+    "max": "",
+    "min": ""
+  },
+  "13": {
+    "metric": "distance",
+    "unite": "cm",
+    "max": "",
+    "min": ""
+  },
+  "14": {
+    "metric": "impédance",
+    "unite": "ohm",
+    "max": "",
+    "min": ""
+  },
+  "15": {
+    "metric": "detection",
+    "unite": "true/false",
+    "max": 1,
+    "min": 0
+  },
+  "16": {
+    "metric": "ouverture porte",
+    "unite": "ouvert/fermé",
+    "max": 1,
+    "min": 0
+  },
+  "17": {
+    "metric": "puissance",
+    "unite": "watt",
+    "max": "",
+    "min": ""
+  },
+  "18": {
+    "metric": "puissance",
+    "unite": "Kw/h",
+    "max": "",
+    "min": ""
+  },
+  "19": {
+    "metric": "scene ON",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "20": {
+    "metric": "scene OFF",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "21": {
+    "metric": "V_HVAC_FLOW_STATE",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "22": {
+    "metric": "V_HVAC_SPEED",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "23": {
+    "metric": "V_LIGTH_LEVEL",
+    "unite": "%",
+    "max": "",
+    "min": ""
+  },
+  "24": {
+    "metric": "VAR_1",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "25": {
+    "metric": "VAR_2",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "26": {
+    "metric": "VAR_3",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "27": {
+    "metric": "VAR_4",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "28": {
+    "metric": "VAR_5",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "29": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "30": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "31": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "32": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "33": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "34": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "35": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "36": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "37": {
+    "metric": "level",
+    "unite": "ppm",
+    "max": ">10000",
+    "min": 0
+  },
+  "38": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "39": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "40": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "41": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "42": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "43": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "44": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "45": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  },
+  "46": {
+    "metric": "",
+    "unite": "",
+    "max": "",
+    "min": ""
+  }
+}
