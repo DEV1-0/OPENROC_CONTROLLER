@@ -14,11 +14,7 @@
   "REDIS": {
     "port": "6379",
     "host": "127.0.0.1",
-    "options": {
-      "server": {
-        "poolSize": 5
-      }
-    }
+    "ipFamily": 4
   },
   "OPENTSDB": {
     "port": "4242",
@@ -31,6 +27,7 @@
     "parity": "none",
     "stopBits": 1,
     "flowControl": false,
-    "newline": "\n"
+    "newline": "\n",
+    "timeout": 3000
   }
 }

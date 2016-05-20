@@ -1,8 +1,14 @@
+/**
+ * Created by epa on 19/05/16.
+ */
+/**
+ * Created by epa on 19/05/16.
+ */
 /*******************************************************************************
  * PROJET : OpenROC
  * @author 2015-2016 Eric Papet <e.papet@dev1-0.com.com>
  * @see The GNU Public License (GPL)
- *
+ * Description : This is the OpenRoc Http Server
  *******************************************************************************
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,27 +29,35 @@ var util = require('util');
 //Horodatage
 var moment = require('moment');
 moment.locale('fr');
-//
-var model;
+var app = require('../../app');//app.js
 
-function WebSocket(m) {
-    model = m;
-    logger.debug("WebSocket Model instantiate \n [%s]", util.inspect(model));
-}
-
-WebSocket.prototype.start = function start(nodes, httpd, cb) {
+function OpenRoc(model) {
+    this.model = model;
+    app.set('port', process.env.PORT || GLOBAL.config.WWW.port || 4000);
+    app.set('host', process.env.HOST || GLOBAL.config.WWW.host || "localhost");
     //
-    sio.listen(httpd, {log: false});
-    logger.debug("WebSocket Started");
-    sio.sockets.on('connection', function (socket) {
-        logger.debug("Websocket Page Connected with Ip: [%s]", socket.handshake.address);
-        // service
-        sio.sockets.emit("init_services", model);
-        // gw
-        nodes.initAllSensors();
-    });
-    cb();
+    this.model.host = app.get('host');
+    this.model.port = app.get('port');
+    this.model.status = false;
+    this.model.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+    //
+    logger.debug("Http Server Model instantiate \n [%s]", util.inspect(this.model));
+
+
 }
 
-module.exports = WebSocket;
+//
+OpenRoc.prototype.start = function (next) {
+    var httpd = app.listen(app.get('port'), app.get('host'), function (server) {
+        //server.timeout(18000);// Timeout socket http
+        logger.debug('OPENROC server listening on %s:%s ', httpd.address().address, httpd.address().port);
 
+    });
+    //
+    this.model.status = true;
+    this.model.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
+    next(httpd);
+}
+
+
+module.exports = OpenRoc;

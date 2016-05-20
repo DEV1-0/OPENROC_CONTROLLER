@@ -32,6 +32,8 @@ moment.locale('fr');
 
 //
 require('../openroc/modules/openroc_globals');
+var logger = require('log4js').getLogger('openroc_core');
+logger.debug(" OPENROC Configuration \n [%s] ", util.inspect(GLOBAL.config));
 
 //log4js-node
 //var log4js = require('log4js');
@@ -149,6 +151,20 @@ const P_ULONG32 = 5;
 const P_CUSTOM = 6;
 
 
+//
+//-------------------------------//
+// Model Service
+//-------------------------------//
+var modelServices = {
+    "http": {"port": '', "host": '', "status": '', "timestamp": ''},
+    "redis": {"host": '', "port": '', "status": '', "timestamp": ''},
+    "serial": {"port": '', "baud": '', "status": '', "timestamp": ''},
+    "tsdb": {"port": '', "host": '', "status": '', "timestamp": ''}
+};
+function update_services() {
+    sio.sockets.emit("init_services", modelServices);
+};
+
 //TABLE D'ETAT DES REPONSES SUR LES PINGS
 PING_NODE_STATE = [];
 function register_ping(node) {
@@ -188,7 +204,7 @@ function req_sensor_model() {
     });
 }
 
-Sensors
+//Sensors
 //
 //tableux des Nodes
 GLOBAL.NODES = [];
@@ -610,10 +626,10 @@ function pushToOpenTSDB(metric, value, timestamp, tag_array, cb) {
 //-------------------------------//
 //- Serial Connection with Node GW -
 //-------------------------------//
-var GwSerialPort = '/dev/ttyACM1';
-const SerialBaud = 115200;
-const SerialNewLineOpenRoc = '\r\n';
-const SerialNewLineMySensor = '\n';
+//var GwSerialPort = '/dev/ttyACM1';
+//const SerialBaud = 115200;
+//const SerialNewLineOpenRoc = '\r\n';
+//const SerialNewLineMySensor = '\n';
 var serial = require('serialport');
 var SerialPort = serial.SerialPort;
 var serial_status = true;
@@ -622,6 +638,8 @@ function connectSerialGw(GwSerialPort, SerialBaud, SerialNewLine, parser) {
     var parser = parser;
     var now = moment();
     //
+    modelServices.serial.port = GwSerialPort;
+    modelServices.serial.baud = SerialBaud;
     //
     try {
         serialPort = new SerialPort(GwSerialPort, {
@@ -732,7 +750,7 @@ function connectSerialGwTimeOut() {
         // if (cptSerialConnection == 0)
         // debug('RECONNECTING TO SERIAL OpenRoc GW');
         //bascule = !bascule;
-        connectSerialGw(GwSerialPort, SerialBaud, SerialNewLineMySensor, parserMySensor);
+        connectSerialGw(GLOBAL.config.SERIAL.port, GLOBAL.config.SERIAL.speed, GLOBAL.config.SERIAL.newline, parserMySensor);
 
         //debug('CONNECTED TO SERIAL OpenRoc GW');
         //cpt++;
@@ -1079,8 +1097,8 @@ function encode(destination, sensor, command, acknowledge, type, payload) {
 // HTTP && Wsocket
 //-------------------------------//
 var app = require('../app');//app.js
-app.set('port', process.env.PORT || 4000);
-app.set('host', process.env.HOST || "localhost");
+app.set('port', GLOBAL.config.WWW.port || process.env.PORT || 4000);
+app.set('host', GLOBAL.config.WWW.host || process.env.HOST || "localhost");
 // Start HTTP SERVER
 function startHttpServer(cb) {
     var httpd = app.listen(app.get('port'), app.get('host'), function (server) {
@@ -1100,7 +1118,7 @@ function startWebsocketServer(httpd, cb) {
     sio.listen(httpd, {log: false});
     debug("WebSocket Started");
     sio.sockets.on('connection', function (socket) {
-        debug("Websocket Page Connected add" + socket);
+        logger.debug("Websocket Page Connected with Ip: [%s]", socket.handshake.address);
         // service
         update_services();
         // gw
@@ -1109,18 +1127,7 @@ function startWebsocketServer(httpd, cb) {
     cb();
 }
 
-//-------------------------------//
-// Model Service
-//-------------------------------//
-var modelServices = {
-    "http": {"port": '', "host": '', "status": '', "timestamp": ''},
-    "redis": {"host": '', "port": '', "status": '', "timestamp": ''},
-    "serial": {"port": GwSerialPort, "baud": SerialBaud, "status": 1, "timestamp": ''},
-    "tsdb": {"port": tsdbPort.port, "host": tsdbHost.host, "status": 1, "timestamp": ''}
-};
-function update_services() {
-    sio.sockets.emit("init_services", modelServices);
-};
+
 
 
 //---------------------------//
@@ -1137,7 +1144,7 @@ startHttpServer(function (server) {
         startWebsocketServer(server, function () {
         });
         //lancement du sous automate Serial
-        connectSerialGw(GwSerialPort, SerialBaud, SerialNewLineMySensor, parserMySensor);
+        connectSerialGw(GLOBAL.config.SERIAL.port, GLOBAL.config.SERIAL.speed, GLOBAL.config.SERIAL.newline, parserMySensor);
         //
         initPushOpenTSDB();
         // Websocket Add Timestamp
