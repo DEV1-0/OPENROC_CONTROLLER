@@ -92,7 +92,9 @@ function displayServiceDatas(trService, json) {
 }
 
 var index = 0;
-var socket = io.connect('http://localhost:4000');
+var host = window.location.protocol + "//" + window.location.host;
+console.log(host);
+var socket = io.connect(host);
 socket.on('connect', function () {
     //
     socket.on('init_services', function (msg) {
