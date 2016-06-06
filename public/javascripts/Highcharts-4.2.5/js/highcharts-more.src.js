@@ -1027,7 +1027,7 @@
                         point.tooltipPos = chart.inverted ?
                             [
                                 yAxis.len + yAxis.pos - chart.plotLeft - y - height / 2,
-                                xAxis.len + xAxis.pos - chart.plotTop - shapeArgs.x - shapeArgs.width / 2,
+                                xAxis.len + xAxis.pos - chart.plotTop - shapeArgs.x - shapeArgs.width / 2, 
                                 height
                             ] : [
                             xAxis.left - chart.plotLeft + shapeArgs.x + shapeArgs.width / 2,
@@ -1057,6 +1057,7 @@
     /*
      * The GaugeSeries class
      */
+
 
 
     /**

@@ -4176,7 +4176,6 @@
         var forms = word.split('_');
         return num % 10 === 1 && num % 100 !== 11 ? forms[0] : (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20) ? forms[1] : forms[2]);
     }
-
     function be__relativeTimeWithPlural(number, withoutSuffix, key) {
         var format = {
             'mm': withoutSuffix ? 'хвіліна_хвіліны_хвілін' : 'хвіліну_хвіліны_хвілін',
@@ -4597,7 +4596,6 @@
         };
         return number + ' ' + mutation(format[key], number);
     }
-
     function specialMutationForYears(number) {
         switch (lastNumber(number)) {
             case 1:
@@ -4610,21 +4608,18 @@
                 return number + ' vloaz';
         }
     }
-
     function lastNumber(number) {
         if (number > 9) {
             return lastNumber(number % 10);
         }
         return number;
     }
-
     function mutation(text, number) {
         if (number === 2) {
             return softMutation(text);
         }
         return text;
     }
-
     function softMutation(text) {
         var mutationTable = {
             'm': 'v',
@@ -4889,11 +4884,9 @@
 
     var cs__months = 'leden_únor_březen_duben_květen_červen_červenec_srpen_září_říjen_listopad_prosinec'.split('_'),
         cs__monthsShort = 'led_úno_bře_dub_kvě_čvn_čvc_srp_zář_říj_lis_pro'.split('_');
-
     function cs__plural(n) {
         return (n > 1) && (n < 5) && (~~(n / 10) !== 1);
     }
-
     function cs__translate(number, withoutSuffix, key, isFuture) {
         var result = number + ' ';
         switch (key) {
@@ -6145,7 +6138,6 @@
             'nolla', 'yhden', 'kahden', 'kolmen', 'neljän', 'viiden', 'kuuden',
             numbersPast[7], numbersPast[8], numbersPast[9]
         ];
-
     function fi__translate(number, withoutSuffix, key, isFuture) {
         var result = '';
         switch (key) {
@@ -6180,7 +6172,6 @@
         result = verbalNumber(number, isFuture) + ' ' + result;
         return result;
     }
-
     function verbalNumber(number, isFuture) {
         return number < 10 ? (isFuture ? numbersFuture[number] : numbersPast[number]) : number;
     }
@@ -6958,7 +6949,6 @@
     //! author : Adam Brunner : https://github.com/adambrunner
 
     var weekEndings = 'vasárnap hétfőn kedden szerdán csütörtökön pénteken szombaton'.split(' ');
-
     function hu__translate(number, withoutSuffix, key, isFuture) {
         var num = number,
             suffix;
@@ -6988,7 +6978,6 @@
         }
         return '';
     }
-
     function week(isFuture) {
         return (isFuture ? '' : '[múlt] ') + '[' + weekEndings[this.day()] + '] LT[-kor]';
     }
@@ -7221,7 +7210,6 @@
         }
         return true;
     }
-
     function is__translate(number, withoutSuffix, key, isFuture) {
         var result = number + ' ';
         switch (key) {
@@ -7248,9 +7236,9 @@
                 return isFuture ? 'dag' : 'degi';
             case 'dd':
                 if (is__plural(number)) {
-                    if (withoutSuffix) {
-                        return result + 'dagar';
-                    }
+                if (withoutSuffix) {
+                    return result + 'dagar';
+                }
                     return result + (isFuture ? 'daga' : 'dögum');
                 } else if (withoutSuffix) {
                     return result + 'dagur';
@@ -7263,9 +7251,9 @@
                 return isFuture ? 'mánuð' : 'mánuði';
             case 'MM':
                 if (is__plural(number)) {
-                    if (withoutSuffix) {
-                        return result + 'mánuðir';
-                    }
+                if (withoutSuffix) {
+                    return result + 'mánuðir';
+                }
                     return result + (isFuture ? 'mánuði' : 'mánuðum');
                 } else if (withoutSuffix) {
                     return result + 'mánuður';
@@ -7794,7 +7782,6 @@
         };
         return withoutSuffix ? format[key][0] : format[key][1];
     }
-
     function processFutureTime(string) {
         var number = string.substr(0, string.indexOf(' '));
         if (eifelerRegelAppliesToNumber(number)) {
@@ -7802,7 +7789,6 @@
         }
         return 'an ' + string;
     }
-
     function processPastTime(string) {
         var number = string.substr(0, string.indexOf(' '));
         if (eifelerRegelAppliesToNumber(number)) {
@@ -7810,7 +7796,6 @@
         }
         return 'virun ' + string;
     }
-
     /**
      * Returns true if the word before the given number loses the '-n' ending.
      * e.g. 'an 10 Deeg' but 'a 5 Deeg'
@@ -7980,7 +7965,6 @@
         'y': 'metai_metų_metus',
         'yy': 'metai_metų_metus'
     };
-
     function translateSeconds(number, withoutSuffix, key, isFuture) {
         if (withoutSuffix) {
             return 'kelios sekundės';
@@ -7988,19 +7972,15 @@
             return isFuture ? 'kelių sekundžių' : 'kelias sekundes';
         }
     }
-
     function translateSingular(number, withoutSuffix, key, isFuture) {
         return withoutSuffix ? forms(key)[0] : (isFuture ? forms(key)[1] : forms(key)[2]);
     }
-
     function special(number) {
         return number % 10 === 0 || (number > 10 && number < 20);
     }
-
     function forms(key) {
         return lt__units[key].split('_');
     }
-
     function lt__translate(number, withoutSuffix, key, isFuture) {
         var result = number + ' ';
         if (number === 1) {
@@ -8015,7 +7995,6 @@
             }
         }
     }
-
     var lt = moment__default.defineLocale('lt', {
         months: {
             format: 'sausio_vasario_kovo_balandžio_gegužės_birželio_liepos_rugpjūčio_rugsėjo_spalio_lapkričio_gruodžio'.split('_'),
@@ -8091,7 +8070,6 @@
         'y': 'gada_gadiem_gads_gadi'.split('_'),
         'yy': 'gada_gadiem_gads_gadi'.split('_')
     };
-
     /**
      * @param withoutSuffix boolean true = a length of time; false = before/after a period of time.
      */
@@ -8105,15 +8083,12 @@
             return number % 10 === 1 && number !== 11 ? forms[0] : forms[1];
         }
     }
-
     function lv__relativeTimeWithPlural(number, withoutSuffix, key) {
         return number + ' ' + lv__format(lv__units[key], number, withoutSuffix);
     }
-
     function relativeTimeWithSingular(number, withoutSuffix, key) {
         return lv__format(lv__units[key], number, withoutSuffix);
     }
-
     function relativeSeconds(number, withoutSuffix) {
         return withoutSuffix ? 'dažas sekundes' : 'dažām sekundēm';
     }
@@ -9211,11 +9186,9 @@
 
     var monthsNominative = 'styczeń_luty_marzec_kwiecień_maj_czerwiec_lipiec_sierpień_wrzesień_październik_listopad_grudzień'.split('_'),
         monthsSubjective = 'stycznia_lutego_marca_kwietnia_maja_czerwca_lipca_sierpnia_września_października_listopada_grudnia'.split('_');
-
     function pl__plural(n) {
         return (n % 10 < 5) && (n % 10 > 1) && ((~~(n / 10) % 10) !== 1);
     }
-
     function pl__translate(number, withoutSuffix, key) {
         var result = number + ' ';
         switch (key) {
@@ -9476,7 +9449,6 @@
         var forms = word.split('_');
         return num % 10 === 1 && num % 100 !== 11 ? forms[0] : (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20) ? forms[1] : forms[2]);
     }
-
     function ru__relativeTimeWithPlural(number, withoutSuffix, key) {
         var format = {
             'mm': withoutSuffix ? 'минута_минуты_минут' : 'минуту_минуты_минут',
@@ -9492,7 +9464,6 @@
             return number + ' ' + ru__plural(format[key], +number);
         }
     }
-
     var monthsParse = [/^янв/i, /^фев/i, /^мар/i, /^апр/i, /^ма[й|я]/i, /^июн/i, /^июл/i, /^авг/i, /^сен/i, /^окт/i, /^ноя/i, /^дек/i];
 
     // http://new.gramota.ru/spravka/rules/139-prop : § 103
@@ -9741,11 +9712,9 @@
 
     var sk__months = 'január_február_marec_apríl_máj_jún_júl_august_september_október_november_december'.split('_'),
         sk__monthsShort = 'jan_feb_mar_apr_máj_jún_júl_aug_sep_okt_nov_dec'.split('_');
-
     function sk__plural(n) {
         return (n > 1) && (n < 5);
     }
-
     function sk__translate(number, withoutSuffix, key, isFuture) {
         var result = number + ' ';
         switch (key) {
@@ -11049,7 +11018,6 @@
         var forms = word.split('_');
         return num % 10 === 1 && num % 100 !== 11 ? forms[0] : (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20) ? forms[1] : forms[2]);
     }
-
     function uk__relativeTimeWithPlural(number, withoutSuffix, key) {
         var format = {
             'mm': withoutSuffix ? 'хвилина_хвилини_хвилин' : 'хвилину_хвилини_хвилин',
@@ -11068,7 +11036,6 @@
             return number + ' ' + uk__plural(format[key], +number);
         }
     }
-
     function weekdaysCaseReplace(m, format) {
         var weekdays = {
                 'nominative': 'неділя_понеділок_вівторок_середа_четвер_п’ятниця_субота'.split('_'),
@@ -11082,7 +11049,6 @@
                     'nominative');
         return weekdays[nounCase][m.day()];
     }
-
     function processHoursFunction(str) {
         return function () {
             return str + 'о' + (this.hours() === 11 ? 'б' : '') + '] LT';

@@ -743,6 +743,7 @@ footer ul.quicklinks {
     line-height: 40px;
 }
 
+
 .btn:focus,
 .btn:active,
 .btn.active,
@@ -764,19 +765,6 @@ img::selection {
     background: 0 0;
 }
 
-.openroc-definitions > div {
-    background-color: #ededed;
-    text-align: justify;
-    border-radius: 10px;
-}
-
-.openroc-definitions .col-lg-3,
-.openroc-definitions .col-md-3,
-.openroc-definitions .col-sm-3 {
-    margin: 0.5%;
-    width: 24%;
-    padding: 10px;
-}
 
 .openroc-definitions .col-lg-12,
 .openroc-definitions .col-md-12,
@@ -787,16 +775,10 @@ img::selection {
 }
 
 .openroc-definitions.header-1 > div {
-    background: #ffc300;
+    background: #eee;
 }
 
-@media (min-width: 768px) {
-    .openroc-definitions .col-lg-3,
-    .openroc-definitions .col-md-3,
-    .openroc-definitions .col-sm-3 {
-        min-height: 250px;
-    }
-}
+
 
 img::-moz-selection {
     background: 0 0;
@@ -832,7 +814,7 @@ body {
 
 .status.disconnected {
     background-color: #d9534f;
-
+	
 }
 
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
@@ -851,11 +833,111 @@ body {
     border-color: #eee;
 }
 
+.panel-default .panel-heading.temperature {
+    background: #fafafa url('../../images/thermometer-icon.png') no-repeat 4% 9px;
+    background-size: auto 60%;
+}
+
+.panel-default .panel-heading.humidity {
+    background: #fafafa url('../../images/humidity-icon.png') no-repeat 4% 9px;
+    background-size: auto 60%;
+}
+
+.panel-default .panel-heading.level {
+    background: #fafafa url('../../images/air-icon.png') no-repeat 4% 9px;
+    background-size: auto 60%;
+}
+
+.panel-default .panel-heading.detection {
+    background: #fafafa url('../../images/alert-icon.png') no-repeat 4% 9px;
+    background-size: auto 60%;
+}
+
+.panel-default .panel-heading.ouverture {
+    background: #fafafa url('../../images/door-opened.png') no-repeat 2% 5px;
+    background-size: auto 74%;
+}
+
+.panel-default .panel-heading.distance {
+    background: #fafafa url('../../images/distance.png') no-repeat 2% 5px;
+    background-size: auto 74%;
+}
+
+.panel-default .panel-heading.pression {
+    background: #fafafa url('../../images/pressure.png') no-repeat 4% 10px;
+    background-size: auto 60%;
+}
+
+.panel-default .panel-heading.presence {
+    background: #fafafa url('../../images/presence.png') no-repeat 2% 5px;
+    background-size: auto 74%;
+}
+
 .node .panel-heading h4 {
     font-size: 12px;
+    min-height: 26px;
+    padding-left: 43px;
+    text-align: left;
 }
 
 .node .panel-heading h4 em {
     color: #aaa;
     font-size: 10px;
+}
+
+.node .panel-body {
+    padding: 5px 0;
+}
+
+#nodes-panel > div {
+    margin-bottom: 10px;
+}
+
+#nodes-panel .panel-default {
+    padding: 0;
+    margin: 2px 2px;
+}
+
+@media (min-width: 768px) {
+    #nodes-panel .col-sm-4 {
+        width: 32%;
+    }
+}
+
+@media (min-width: 992px) {
+    #nodes-panel .col-md-3 {
+        width: 24%;
+    }
+}
+
+@media (min-width: 1200px) {
+    #nodes-panel .col-lg-2 {
+        width: 16%;
+    }
+}
+
+#clock > .fa {
+    margin-right: 3px;
+}
+
+.node-body {
+    margin: 5px;
+}
+
+.hublot {
+    background-color: #90cdfd;
+    border: 7px solid #f1f1f1;
+    border-radius: 100%;
+    color: #fff;
+    height: 170px;
+    margin: 0 auto;
+    text-align: center;
+    width: 170px;
+    z-index: 100;
+}
+
+.hublot img {
+    height: 156px;
+    width: 156px;
+    border-radius: 50%;
 }

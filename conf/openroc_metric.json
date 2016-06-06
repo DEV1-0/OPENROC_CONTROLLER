@@ -25,8 +25,8 @@
   },
   "4": {
     "metric": "pression",
-    "unite": "Kp",
-    "max": 100,
+    "unite": "Kpa",
+    "max": 200,
     "min": 0
   },
   "5": {
@@ -36,13 +36,13 @@
     "min": "unstable"
   },
   "6": {
-    "metric": "précipitation",
+    "metric": "precipitation",
     "unite": "mm",
     "max": "",
     "min": ""
   },
   "7": {
-    "metric": "taux de précipitation",
+    "metric": "taux de precipitation",
     "unite": "mm3",
     "max": "",
     "min": ""
@@ -96,7 +96,7 @@
     "min": 0
   },
   "16": {
-    "metric": "ouverture porte",
+    "metric": "ouverture",
     "unite": "ouvert/fermé",
     "max": 1,
     "min": 0
@@ -145,13 +145,13 @@
   },
   "24": {
     "metric": "VAR_1",
-    "unite": "",
+    "unite": "m",
     "max": "",
     "min": ""
   },
   "25": {
-    "metric": "VAR_2",
-    "unite": "",
+    "metric": "altitude",
+    "unite": "m",
     "max": "",
     "min": ""
   },
@@ -228,8 +228,8 @@
     "min": 0
   },
   "38": {
-    "metric": "",
-    "unite": "",
+    "metric": "volt_batt",
+    "unite": "Volt",
     "max": "",
     "min": ""
   },

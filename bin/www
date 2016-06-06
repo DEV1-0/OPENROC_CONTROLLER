@@ -292,20 +292,23 @@ function updateSensor(sensor) {
 function initAllSensors(mode) {
     // on affiche tous les nodes
     GLOBAL.NODES.forEach(function (node) {
-        if (mode != undefined) {
-            if (node.node_id == '0' && mode == true)
-                node.status = mode;
-            else
-                node.status = !mode;
-            if (mode == false)
-                node.status = mode;
+        if (node != undefined || node == null) {
+            if (mode != undefined) {
+                if (node.node_id == '0' && mode == true)
+                    node.status = mode;
+                else
+                    node.status = !mode;
+                if (mode == false)
+                    node.status = mode;
+            }
+            node.last_update = moment().format('X');
+            GLOBAL.NODES[node.node_id] = node;
+            //debug("initAllSensors %s",u;til.inspect(GLOBAL.NODES[node.node_id]));
+            updateNode(node)
+            // saveNode(GLOBAL.NODES[node.node_id]);
+            //sio.sockets.emit('update_node', GLOBAL.NODES[node.node_id]);
         }
-        node.last_update = moment().format('X');
-        GLOBAL.NODES[node.node_id] = node;
-        //debug("initAllSensors %s",u;til.inspect(GLOBAL.NODES[node.node_id]));
-        updateNode(node)
-        // saveNode(GLOBAL.NODES[node.node_id]);
-        //sio.sockets.emit('update_node', GLOBAL.NODES[node.node_id]);
+
     });
 }
 // Initialyse le modele de données
@@ -324,6 +327,7 @@ function init_modele_nodes(cb) {
                             cb(err, null);
                         } else {
                             try {
+                                node.status = 0;
                                 GLOBAL.NODES[id] = JSON.parse(node);
                             } catch (err) {
                                 cb(err, null);
@@ -335,6 +339,7 @@ function init_modele_nodes(cb) {
             );
             cb(null, true);
         });
+
     } else { //Mode restrient GLOBAL.NODES[];
         GLOBAL.NODES = [];
         cb(null, false);
@@ -506,7 +511,7 @@ function saveMetric(sensor) {
     //var node = registerNode(node_id);
     debug("saveMetric:", util.inspect(sensor));
     if (sensor != undefined && sensor.type != undefined && sensor.value != null) {
-        var key = moment().format('X') + "-" + sensor.node_id + "-" + sensor.sensor_id + "-" + sensor.type.metric;
+        var key = moment().format('x') + "-" + sensor.node_id + "-" + sensor.sensor_id + "-" + sensor.type.metric;
         toRedis(2, key, JSON.stringify(sensor), 100000, function (err) {
             if (err) {
                 debug("Write Redis Error %s", util.inspect(err));
@@ -576,36 +581,18 @@ function pushToOpenTSDB(metric, value, timestamp, tag_array, cb) {
     //This function stores data points in opentsdb
     client_writer_opentsdb.store(dps, function (res, err) {
         if (err != null) {
-            debug(" pushToOpenTSDB push ERROR : %s Error message :%s", JSON.stringify(dp), err);
-            //var json = {
-            //    "type": "G",
-            //    "port": client_writer_opentsdb.port,
-            //    "host": client_writer_opentsdb.host,
-            //    "status": 1,
-            //    "err": err
-            //};
-            //Horodatage des messages pour Redis_key et tags TSDB
-            // json["timestamp"] = Date.now();
-            // sio.emit("opentsdb_connected", json);
-            //debug(json);
-            //
-            // json = {
-            //     timestamp: Date.now(),
-            //     type: 'E',
-            //     node_id: 255,
-            //     metric: "openTSB_send",
-            //     value: false,
-            //     request: JSON.stringify(dp)
-            // };
             if (tsdb_status) {
+                debug(" pushToOpenTSDB push ERROR : %s Error message :%s", JSON.stringify(dp), err);
                 tsdb_status = false;
                 modelServices.tsdb.status = tsdb_status;
                 modelServices.tsdb.timestamp = moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS');
                 modelServices.tsdb.error = err.errno;
                 sio.emit("opentsdb_connected", modelServices.tsdb);
-            }
+                cb({'error': err.errno});
+            } else
+                cb();
             //sendToRedis(json, 600);
-            cb({'error': err.errno});
+
         } else {
             if (!tsdb_status) {
                 tsdb_status = true;
@@ -883,6 +870,7 @@ function parserMySensor(data) {
                     //saveProtocol(sender, payload, db);
                     debug("<- [C_PESENTATION:Node <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", sender, sensor, command, type, payload, ack);
                     current_node.version = payload;
+                    current_node.status = 1;
                     updateNode(current_node);
                 } else {// presenation d'un sensor
                     debug("<- [C_PESENTATION:Sensor <- sender:%d,sensor:%d,command:%d,type:%s,payload:%s, ack:%s]", sender, sensor, command, type, payload, ack);
@@ -906,7 +894,7 @@ function parserMySensor(data) {
                 // current_sensor = registerSensor(sender, sensor);
                 if (sensor != 255) {
                     current_sensor = registerSensor(sender, sensor);
-                    current_sensor.last_update = moment().format('X');
+                    current_sensor.last_update = moment().format('x');
                     if (type != V_VAR1) { // Metric
                         current_sensor.type = GLOBAL.METRIC[type];
                         current_sensor.value = payload;
@@ -932,7 +920,7 @@ function parserMySensor(data) {
                             current_node.status = true;
                         }
                         current_node.battery_level = payload;
-                        current_node.last_update = moment().format('X');
+                        current_node.last_update = moment().format('x');
                         updateNode(current_node);
                         saveMetricBattery(current_node);
                         // Presentation
@@ -959,7 +947,8 @@ function parserMySensor(data) {
                         getNextNodeId(function (next) {
                             if (next != null) {
                                 debug("next  next id %d", next);
-                                sendMessage(255, 255, C_INTERNAL, 1, I_ID_RESPONSE, next);
+                                //sendMessage(255, 255, C_INTERNAL, 1, I_ID_RESPONSE, next);
+                                sendMessage(255, 255, C_INTERNAL, 0, I_ID_RESPONSE, next);
                             }
                             else
                                 debug("error send next id ");
@@ -1052,7 +1041,7 @@ function parserMySensor(data) {
 }
 //Send time to node
 function sendTime(destination, sensor) {
-    var payload = moment().format('X') / 1000;
+    var payload = moment().format('x') / 1000;
     //var payload = new Date().getTime()/1000;
     var command = C_INTERNAL;
     var acknowledge = 0; // no ack
@@ -1128,8 +1117,6 @@ function startWebsocketServer(httpd, cb) {
 }
 
 
-
-
 //---------------------------//
 // Main Application
 //---------------------------//
@@ -1150,10 +1137,10 @@ startHttpServer(function (server) {
         // Websocket Add Timestamp
         sio.sockets.emit("init_services", modelServices);
         //
-        setInterval(function () {
+        //  setInterval(function () {
             //pour les sensors
             //req_sensor_model();
-        }, 30000);
+        // }, 30000);
         // WebSocket Broadcast Date
         setInterval(function () {
             sio.sockets.emit("update_time", moment().format('dddd Do MMMM YYYY, hh:mm:ss:SSS'));

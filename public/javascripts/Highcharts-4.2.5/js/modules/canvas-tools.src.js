@@ -289,7 +289,7 @@ function RGBColor(color_string) {
 
 /**
  * @license canvg.js - Javascript SVG parser and renderer on Canvas
- * MIT Licensed
+ * MIT Licensed 
  * Gabe Lerner (gabelerner@gmail.com)
  * http://code.google.com/p/canvg/
  *

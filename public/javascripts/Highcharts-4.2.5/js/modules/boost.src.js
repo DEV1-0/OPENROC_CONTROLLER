@@ -6,7 +6,7 @@
  *
  * Author: Torstein Honsi
  *
- *
+ * 
  * Development plan
  * - Column range.
  * - Heatmap.
@@ -21,7 +21,7 @@
  *   needs to be built.
  * - Test IE9 and IE10.
  * - Stacking is not perhaps not correct since it doesn't use the translation given in
- *   the translate method. If this gets to complicated, a possible way out would be to
+ *   the translate method. If this gets to complicated, a possible way out would be to 
  *   have a simplified renderCanvas method that simply draws the areaPath on a canvas.
  *
  * If this module is taken in as part of the core
@@ -36,12 +36,12 @@
  * - Columns are always one pixel wide. Don't set the threshold too low.
  *
  * Optimizing tips for users
- * - For scatter plots, use a marker.radius of 1 or less. It results in a rectangle being drawn, which is
+ * - For scatter plots, use a marker.radius of 1 or less. It results in a rectangle being drawn, which is 
  *   considerably faster than a circle.
  * - Set extremes (min, max) explicitly on the axes in order for Highcharts to avoid computing extremes.
  * - Set enableMouseTracking to false on the series to improve total rendering time.
  * - The default threshold is set based on one series. If you have multiple, dense series, the combined
- *   number of points drawn gets higher, and you may want to set the threshold lower in order to
+ *   number of points drawn gets higher, and you may want to set the threshold lower in order to 
  *   use optimizations.
  */
 
@@ -129,7 +129,6 @@
                 this[method + 'Canvas']();
             }
         }
-
         wrap(Series.prototype, method, branch);
 
         // A special case for some types - its translate method is already wrapped
@@ -203,7 +202,7 @@
         },
 
         /**
-         * Create a hidden canvas to draw the graph on. The contents is later copied over
+         * Create a hidden canvas to draw the graph on. The contents is later copied over 
          * to an SVG image element.
          */
         getContext: function () {
@@ -238,7 +237,7 @@
             return ctx;
         },
 
-        /**
+        /** 
          * Draw the canvas image inside an SVG image
          */
         canvasToSVG: function () {

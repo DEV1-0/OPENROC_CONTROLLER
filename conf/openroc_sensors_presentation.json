@@ -1,7 +1,7 @@
 {
   "0": "Door and window sensors",
-  "1": "Smoke sensor",
-  "2": "Motion sensors",
+  "1": "Capteur Présence",
+  "2": "Détecteur de Fumée",
   "3": "Light Actuator (on/off) ",
   "4": "Dimmable device of some",
   "5": "Window covers or shades ",
@@ -23,12 +23,17 @@
   "21": "Water meter",
   "22": "Air quality sensor e.g. MQ-2",
   "23": "custom sensors",
-  "24": "Thermostat/HVAC device",
-  "25": "Thermostat/HVAC device",
-  "26": "Multimeter device",
-  "27": "Sprinkler device",
-  "28": "Water leak sensor",
-  "29": "Sound sensor",
-  "30": "Vibration sensor"
+  "24": "Détecteur de poussiéres",
+  "25": "Scene controller ",
+  "26": "RGB light",
+  "27": "RGBW light",
+  "28": "Color sensor",
+  "29": "Thermostat/HVAC ",
+  "30": "Multimeter device",
+  "31": "Multimeter device",
+  "32": "Water leak sensor",
+  "33": "Sound sensor",
+  "34": "Vibration sensor",
+  "35": "Moisture sensor"
 }
 

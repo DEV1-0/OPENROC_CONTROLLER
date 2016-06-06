@@ -132,7 +132,6 @@
         });
         return result;
     }
-
     // Make function acessible to plugins
     Highcharts.perspective = perspective;
     /***
@@ -328,7 +327,6 @@
         function mapPath(i) {
             return pArr[i];
         }
-
         var pickShape = function (path1, path2) {
             var ret = [];
             path1 = map(path1, mapPath);
@@ -504,7 +502,6 @@
                         function interpolate(key) {
                             return from[key] + (pick(to[key], from[key]) - from[key]) * fx.pos;
                         }
-
                         fx.elem.setPaths(merge(from, {
                             x: interpolate('x'),
                             y: interpolate('y'),
@@ -697,7 +694,6 @@
             }
             return angle;
         }
-
         angleEnd = toZeroPIRange(angleEnd);
         angleStart = toZeroPIRange(angleStart);
         angleMid = toZeroPIRange(angleMid);
@@ -1602,7 +1598,7 @@
                     // Hide null or 0 points (#3006, 3650)
                     graphic[point.y && point.visible ? 'show' : 'hide']();
                 }
-            });
+            });    
         }
     });
 
