@@ -22,7 +22,7 @@
     "stylus": "0.42.3"
   },
   "description": "**OPENROC** *Routeur d'Objets Connectés*",
-  "main": "bin/www.js",
+  "main": "bin/www",
   "devDependencies": {},
   "author": "e.papet@dev1-0.com",
   "license": "GPL-3.0"

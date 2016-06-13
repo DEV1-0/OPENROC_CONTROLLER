@@ -50,10 +50,15 @@ Voir <http://www.guiguishow.info/2013/09/07/auto-hebergement-sur-olinuxino/> pou
 
 Nous avons choisi la **Olimex** par ce que l'ensemble de ces composants logiciel et hardware sont **Open Source** contrairement à la RasperryPi <https://olimex.wordpress.com/2014/10/23/olinuxino-and-raspberry-pi-compare/>
 
--   Activation de l'internet : `ifconfig -a dhclient eth0`
--   Connexion : `ssh root@[ip de la carte sur votre réseau]` mot de passe: olimex
--   Modification du fichier `/etc/network/interfaces` ajouter : `auto eth0 iface eth0 inet dhcp`
--   Optimisation des paquets `apt-get autoremove --purge gnome-* xserver-* desktop-*`
+-   Connexion : 
+    - `ssh root@[ip de la carte sur votre réseau]` 
+    - mot de passe: olimex
+-   Connexion :Activation de l'internet : 
+    - `ifconfig -a dhclient eth0`
+-   Modification du fichier `/etc/network/interfaces`
+    -  ajouter : `auto eth0 iface eth0 inet dhcp`
+-   Optimisation des paquets 
+    - `apt-get autoremove --purge gnome-* xserver-* desktop-*`
 -   Installation du serveur **Node.js version V0.10.29**
     - `apt-get install build-essential`
     - `wget http://nodejs.org/dist/v0.10.29/node-v0.10.29.tar.gz`
@@ -97,31 +102,54 @@ Tous les fichiers de configurations sont modifiables à chaud
 
 ###AUTOMATISATION DU LANCEMENT DE L'APPLICATION AVEC PM2
 **PM2** est un module de node.js qui premet le monitoring des application node.js
+
 - `cd /home/olimex`
+
 - `sudo npm instal pm2 -g`
+
 - `pm2 starup`
+
 - `sudo su -c "env PATH=$PATH:/usr/local/bin pm2 startup linux -u olimex --hp /home/olimex"`
+
 - `sudo su -c "chmod +x /etc/init.d/pm2-init.sh && update-rc.d pm2-init.sh defaults"`
+
 - `pm2 start OPENROC/bin/www`
+
 - `pm2 save`
+
 - `pm2 stop OPENROC/bin/www`
+
 - Changer le PATH des logs dans conf/log4js.json' avec "filename": "/home/olimex/OpenRocV2/logs/openroc_core.log" et "/home/olimex/OpenRocV2/logs/openroc_error.log"
-- Ajouter le groupe secondaire "dialout" pour l'accès à l'interface série **ttyACM0** `sudo usermod -a -G dialout olimex`
+
+- Ajouter le groupe secondaire "dialout" pour l'accès à l'interface série **ttyACM0** 
+    - `sudo usermod -a -G dialout olimex`
+
 - Reboot `sudo reboot'
+
 - Attendez 30 seconde puis ouvrez votre navigateur à l'URL **http://ip_olimex:4000** et branchez votre Gateway à la sortie série de l'olimex.
+
 
 
 ###PENSE BÊTE
 
-  ####OpenTSDB/HBASE* 
-  - sur quickstart.cloudera 
-    -  cd /home/cloudera/opentsdb
-    - ./build/tsdb tsd --port=4242 --staticroot=build/staticroot/ --cachedir=/tmp/tsd/  --auto-metric
-    - http://quickstart.cloudera:442
+####OpenTSDB/HBASE 
   
-  ####Grafana
+  - sur quickstart.cloudera 
+  
+    -  cd /home/cloudera/opentsdb
+    
+    - ./build/tsdb tsd --port=4242 --staticroot=build/staticroot/ --cachedir=/tmp/tsd/  --auto-metric
+    
+    - http://quickstart.cloudera:4242
+    
+  
+####Grafana
+  
    - sudo service grafana-server start --config /etc/grafana/grafana.ini
+   
    - http://localhost:3000
+   
    - https://github.com/grafana/grafana
-     *REDIS*
+   
+
  
